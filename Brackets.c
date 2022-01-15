@@ -2,65 +2,49 @@
 
 int main()
 {
-    char line[200] = {0};
+    char line[100000] = {0};
     gets(line);
-    int brac_count = 0;
+    int len = 0;
     for(int i = 0; line[i] != '\0'; i++)
-        if(line[i] == '(' || line[i] == ')' || line[i] == '[' || line[i] == ']' || line[i] == '{' || line[i] == '}')
-            brac_count++;
-    if(brac_count % 2 != 0)
+        len++;
+    while(1)
     {
-        printf("False(1)!\n");
-        return 0;
-    }
-    int round_brac = 0, quad_brac = 0, fig_brac = 0;
-    for(int i = 0; line[i] != '\0'; i++)
-    {
-        if(line[i] == '(')
-            round_brac++;
-        if(line[i] == ')')
-            round_brac--;
-        if(line[i] == '[')
-            quad_brac++;
-        if(line[i] == ']')
-            quad_brac--;
-        if(line[i] == '{')
-            fig_brac++;
-        if(line[i] == '}')
-            fig_brac--;
-        if(round_brac < 0 || quad_brac < 0 || fig_brac < 0)
+        int trig = 0;
+        for(int i = 0; i < len; i++)
+            if((line[i] == '(' && line[i + 1] == ')') ||
+               (line[i] == '[' && line[i + 1] == ']') ||
+               (line[i] == '{' && line[i + 1] == '}'))
+            {
+                line[i] = '\0';
+                line[i + 1] = '\0';
+                trig = 1;
+            }
+        if(trig == 0)
         {
-            printf("False(2)!\n");
+            printf("NO\n");
+            return 0;
+        }
+        char buf[100000] = {0};
+        int j = 0;
+        for(int i = 0; i < len; i++)
+            if(line[i] != '\0')
+            {
+                buf[j] = line[i];
+                j++;
+            }
+        for(int i = 0; i < len; i++)
+            line[i] = '\0';
+        for(int i = 0; i < j; i++)
+            line[i] = buf[i];
+        len = 0;
+        for(int i = 0; line[i] != '\0'; i++)
+            len++;
+        if(len == 0)
+        {
+            printf("YES\n");
             return 0;
         }
     }
-    while(brac_count > 0)
-    {
-        int open = 0, close = 0;
-        for(int i = 0; line[i] != '\0'; i++)
-            if(line[i] == '(' || line[i] == '[' || line[i] == '{')
-                open = i;
-        for(int i = open; line[i] != '\0'; i++)
-            if((line[open] == '(' && line[i] == ')') || (line[open] == '[' && line[i] == ']') || (line[open] == '{' && line[i] == '}'))
-            {
-                close = i;
-                break;
-            }
-        for(int i = open + 1; i < close; i++)
-            if(line[i] == ')' || line[i] == ']' || line[i] == '}')
-            {
-                printf("False(3)!\n");
-                return 0;
-            }
-        for(int i = open; i <= close; i++)
-            line[i] = 'z';
-        brac_count -= 2;
-    }
-    if(round_brac != 0 || quad_brac != 0 || fig_brac != 0)
-    {
-        printf("False(4)!\n");
-        return 0;
-    }
-    printf("True!\n");
     return 0;
 }
+
